@@ -33,7 +33,7 @@ package
 	public class LoadXLSXExample extends Sprite
 	{
 		//Create the Excel Loader
-		var excel_loader:XLSXLoader=new XLSXLoader();
+		protected var excel_loader:XLSXLoader=new XLSXLoader();
 		
 		public function LoadXLSXExample()
 		{
@@ -49,7 +49,7 @@ package
 		}
 		
 		//Handler for loading complete
-		private function loadingComplete(e:Event)
+		private function loadingComplete(e:Event):void
 		{
 			//Access a worksheet by name ('Sheet1')
 			var sheet_1:Worksheet=excel_loader.worksheet("Sheet1");
