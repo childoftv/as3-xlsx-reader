@@ -17,13 +17,11 @@
  *    misrepresented as being the original software.
  * 3. This notice may not be removed or altered from any source distribution.
  */
-
 package com.deng.fzip
 {
 	import com.deng.utils.ChecksumUtil;
 	
 	import flash.utils.*;
-
 	/**
 	 * Represents a file contained in a ZIP archive.
 	 */		
@@ -48,14 +46,11 @@ package com.deng.fzip
 		protected var _extraFields:Dictionary;
 		protected var _comment:String = "";
 		protected var _content:ByteArray;
-
 		internal var _crc32:uint;
 		internal var _sizeCompressed:uint = 0;
 		internal var _sizeUncompressed:uint = 0;
-
 		protected var isCompressed:Boolean = false;
 		protected var parseFunc:Function = parseFileHead;
-
 		// compression methods
 		/**
 		 * @private
@@ -101,7 +96,6 @@ package com.deng.fzip
 		 * @private
 		 */		
 		public static const COMPRESSION_IMPLODED_PKWARE:int = 10;
-
 		/**
 		 * @private
 		 */		
@@ -147,7 +141,6 @@ package com.deng.fzip
 		internal function get hasDataDescriptor():Boolean {
 			return _hasDataDescriptor;
 		}
-
 		/**
 		 * The raw, uncompressed file. 
 		 */
@@ -236,7 +229,6 @@ package com.deng.fzip
 			}
 			return str;
 		}
-
 		/**
 		 * Sets a string as the file's content.
 		 * 
@@ -263,7 +255,6 @@ package com.deng.fzip
 				_sizeUncompressed = _sizeCompressed = _content.length;
 			}
 		}
-
 		/**
 		 * Serializes this zip archive into an IDataOutput stream (such as 
 		 * ByteArray or FileStream) according to PKZIP APPNOTE.TXT
@@ -389,8 +380,6 @@ package com.deng.fzip
 			}
 			return size;
 		} 
-
-
 		/**
 		 * @private
 		 */		
@@ -398,14 +387,12 @@ package com.deng.fzip
 			while (stream.bytesAvailable && parseFunc(stream)) {}
 			return (parseFunc === parseFileIdle);
 		}
-
 		/**
 		 * @private
 		 */		
 		protected function parseFileIdle(stream:IDataInput):Boolean {
 			return false;
 		}
-
 		/**
 		 * @private
 		 */		
@@ -421,7 +408,6 @@ package com.deng.fzip
 			}
 			return false;
 		}
-
 		/**
 		 * @private
 		 */		
@@ -456,7 +442,6 @@ package com.deng.fzip
 			}
 			return continueParsing;
 		}
-
 		/**
 		 * @private
 		 */		
@@ -524,7 +509,6 @@ package com.deng.fzip
 				data.readBytes(new ByteArray(), 0, bytesLeft);
 			}
 		}
-
 		/**
 		 * @private
 		 */		

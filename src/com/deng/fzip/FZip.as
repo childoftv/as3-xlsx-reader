@@ -17,14 +17,12 @@
  *    misrepresented as being the original software.
  * 3. This notice may not be removed or altered from any source distribution.
  */
-
 package com.deng.fzip
 {
 	import flash.events.*;
 	import flash.net.URLRequest;
 	import flash.net.URLStream;
 	import flash.utils.*;
-
 	/**
 	 * Dispatched when a file contained in a ZIP archive has 
 	 * loaded successfully.
@@ -32,7 +30,6 @@ package com.deng.fzip
 	 * @eventType deng.fzip.FZipEvent.FILE_LOADED
 	 */
 	[Event(name="fileLoaded", type="deng.fzip.FZipEvent")]
-
 	/**
 	 * Dispatched when an error is encountered while parsing a 
 	 * ZIP Archive.
@@ -40,14 +37,12 @@ package com.deng.fzip
 	 * @eventType deng.fzip.FZipErrorEvent.PARSE_ERROR
 	 */
 	[Event(name="parseError", type="deng.fzip.FZipErrorEvent")]
-
 	/**
 	 * Dispatched when data has loaded successfully. 
 	 *
 	 * @eventType flash.events.Event.COMPLETE 
 	 */
 	[Event(name="complete", type="flash.events.Event")]
-
 	/**
 	 * Dispatched if a call to FZip.load() attempts to access data 
 	 * over HTTP, and the current Flash Player is able to detect 
@@ -59,7 +54,6 @@ package com.deng.fzip
 	 * @eventType flash.events.HTTPStatusEvent.HTTP_STATUS 
 	 */
 	[Event(name="httpStatus", type="flash.events.HTTPStatusEvent")]
-
 	/**
 	 * Dispatched when an input/output error occurs that causes a 
 	 * load operation to fail. 
@@ -67,7 +61,6 @@ package com.deng.fzip
 	 * @eventType flash.events.IOErrorEvent.IO_ERROR
 	 */
 	[Event(name="ioError", type="flash.events.IOErrorEvent")]
-
 	/**
 	 * Dispatched when a load operation starts.
 	 *
@@ -75,7 +68,6 @@ package com.deng.fzip
 	 */
 	 
 	[Event(name="open", type="flash.events.Event")]
-
 	/**
 	 * Dispatched when data is received as the download operation 
 	 * progresses.
@@ -83,7 +75,6 @@ package com.deng.fzip
 	 * @eventType flash.events.ProgressEvent.PROGRESS
 	 */
 	[Event(name="progress", type="flash.events.ProgressEvent")]
-
 	/**
 	 * Dispatched if a call to FZip.load() attempts to load data 
 	 * from a server outside the security sandbox. 
@@ -91,8 +82,6 @@ package com.deng.fzip
 	 * @eventType flash.events.SecurityErrorEvent.SECURITY_ERROR
 	 */
 	[Event(name="securityError", type="flash.events.SecurityErrorEvent")]
-
-
 	/**
 	 * Loads and parses ZIP archives.
 	 * 
@@ -113,7 +102,6 @@ package com.deng.fzip
 	{
 		protected var filesList:Array;
 		protected var filesDict:Dictionary;
-
 		protected var urlStream:URLStream;
 		protected var charEncoding:String;
 		protected var parseFunc:Function;
@@ -122,7 +110,6 @@ package com.deng.fzip
 		protected var ddBuffer:ByteArray;
 		protected var ddSignature:uint;
 		protected var ddCompressedSize:uint;
-
 		// PKZIP record signatures
 		internal static const SIG_CENTRAL_FILE_HEADER:uint = 0x02014b50;
 		internal static const SIG_SPANNING_MARKER:uint = 0x30304b50;
@@ -134,7 +121,6 @@ package com.deng.fzip
 		internal static const SIG_DATA_DESCRIPTOR:uint = 0x08074b50;
 		internal static const SIG_ARCHIVE_EXTRA_DATA:uint = 0x08064b50;
 		internal static const SIG_SPANNING:uint = 0x08074b50;
-
 		/**
 		 * Constructor
 		 * 
@@ -149,14 +135,12 @@ package com.deng.fzip
 			charEncoding = filenameEncoding;
 			parseFunc = parseIdle;
 		}
-
 		/**
 		 * Indicates whether a file is currently being processed or not.
 		 */		
 		public function get active():Boolean {
 			return (parseFunc !== parseIdle);
 		}
-
 		/**
 		 * Begins downloading the ZIP archive specified by the request
 		 * parameter.
@@ -199,7 +183,6 @@ package com.deng.fzip
 				}
 			}
 		}
-
 		/**
 		 * Immediately closes the stream and cancels the download operation.
 		 * Files contained in the ZIP archive being loaded stay accessible
@@ -213,7 +196,6 @@ package com.deng.fzip
 				urlStream = null;
 			}
 		}
-
 		/**
 		 * Serializes this zip archive into an IDataOutput stream (such as 
 		 * ByteArray or FileStream) according to PKZIP APPNOTE.TXT
@@ -270,7 +252,6 @@ package com.deng.fzip
 				stream.endian = endian;
 			}
 		}
-
 		/**
 		 * Gets the number of accessible files in the ZIP archive.
 		 * 
@@ -279,7 +260,6 @@ package com.deng.fzip
 		public function getFileCount():uint {
 			return filesList ? filesList.length : 0;
 		}
-
 		/**
 		 * Retrieves a file contained in the ZIP archive, by index.
 		 * 
@@ -289,7 +269,6 @@ package com.deng.fzip
 		public function getFileAt(index:uint):FZipFile {
 			return filesList ? filesList[index] as FZipFile : null;
 		}
-
 		/**
 		 * Retrieves a file contained in the ZIP archive, by filename.
 		 * 
@@ -299,7 +278,6 @@ package com.deng.fzip
 		public function getFileByName(name:String):FZipFile {
 			return filesDict[name] ? filesDict[name] as FZipFile : null;
 		}
-
 		/**
 		 * Adds a file to the ZIP archive.
 		 * 
@@ -312,7 +290,6 @@ package com.deng.fzip
 		public function addFile(name:String, content:ByteArray = null, doCompress:Boolean = true):FZipFile {
 			return addFileAt(filesList ? filesList.length : 0, name, content, doCompress);
 		}
-
 		/**
 		 * Adds a file from a String to the ZIP archive.
 		 * 
@@ -326,7 +303,6 @@ package com.deng.fzip
 		public function addFileFromString(name:String, content:String, charset:String = "utf-8", doCompress:Boolean = true):FZipFile {
 			return addFileFromStringAt(filesList ? filesList.length : 0, name, content, charset, doCompress);
 		}
-
 		/**
 		 * Adds a file to the ZIP archive, at a specified index.
 		 * 
@@ -357,7 +333,6 @@ package com.deng.fzip
 			filesDict[name] = file;
 			return file;
 		}
-
 		/**
 		 * Adds a file from a String to the ZIP archive, at a specified index.
 		 * 
@@ -389,7 +364,6 @@ package com.deng.fzip
 			filesDict[name] = file;
 			return file;
 		}
-
 		/**
 		 * Removes a file at a specified index from the ZIP archive.
 		 * 
@@ -407,7 +381,6 @@ package com.deng.fzip
 			}
 			return null;
 		}
-
 		/**
 		 * @private
 		 */		
@@ -415,7 +388,6 @@ package com.deng.fzip
 			while (parseFunc(stream)) {}
 			return (parseFunc === parseIdle);
 		}
-
 		/**
 		 * @private
 		 */		
@@ -453,7 +425,6 @@ package com.deng.fzip
 			}
 			return false;
 		}
-
 		/**
 		 * @private
 		 */		
@@ -493,7 +464,6 @@ package com.deng.fzip
 			}
 			return false;
 		}
-
 		/**
 		 * @private
 		 */		
@@ -512,7 +482,6 @@ package com.deng.fzip
 			}
 			return false;
 		}
-
 		/**
 		 * @private
 		 */		

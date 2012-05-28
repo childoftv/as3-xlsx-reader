@@ -17,12 +17,10 @@
  *    misrepresented as being the original software.
  * 3. This notice may not be removed or altered from any source distribution.
  */
-
 package com.deng.fzip
 {
 	import com.deng.fzip.FZipFile;
 	import flash.events.Event;
-
 	/**
 	 * FZip dispatches FZipEvent objects when a file contained in the
 	 * ZIP archive has finished loading and can be accessed. There is 
@@ -39,7 +37,6 @@ package com.deng.fzip
 		* Defines the value of the type property of a FZipEvent object.
 		*/		
 		public static const FILE_LOADED:String = "fileLoaded";
-
 		/**
 		 * Constructor
 		 * 
