@@ -1,0 +1,4 @@
+.project
+.actionScriptProperties
+bin-debug/
+*.swf
