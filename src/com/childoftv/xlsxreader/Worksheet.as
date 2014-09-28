@@ -177,10 +177,12 @@ package com.childoftv.xlsxreader
 				//trace(sharedString(item.v.toString()));
 				if(item.f.(children().length()!=0)+""=="") // If it's the result of a formula, no need to replace
 				{
+					var content:String = "";
 					if(item.@t=="str")
-						item.v=fileLink.sharedString(item.v.toString());
+						content=fileLink.sharedString(item.v.toString());
 					if(item.@t=="s")
-						item.v=fileLink.sharedString(item.v.toString());
+						content = fileLink.sharedString(item.v.toString());
+					item.v = content;
 				}
 			}
 			return copy;
