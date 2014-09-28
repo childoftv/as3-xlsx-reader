@@ -24,6 +24,8 @@ package com.childoftv.xlsxreader
 	
 	
 	
+	import deng.fzip.FZip;
+	import deng.fzip.FZipFile;
 	import flash.events.Event;
 	import flash.events.EventDispatcher;
 	import flash.events.IOErrorEvent;
@@ -31,8 +33,6 @@ package com.childoftv.xlsxreader
 	import flash.utils.ByteArray;
 	import flash.utils.Dictionary;
 	
-	import deng.fzip.FZip;
-	import deng.fzip.FZipFile;
 	
 	
 	[Event(name="complete",type="flash.events.Event")]
@@ -240,8 +240,45 @@ package com.childoftv.xlsxreader
 			else
 			{
 				
-				
-				return sharedStrings().child(index).t.toString();;
+				var list:XMLList = sharedStrings().child(index);
+				var content:String = "";
+				var length:uint = list.r.length();
+				// rows with font attributes
+				/* e.g.
+				 <si>
+					<r>
+						<t>desc_</t>
+					</r>
+					<r>
+						<rPr>
+							<sz val="11"/>
+							<color rgb="FF00FF00"/>
+							<rFont val="宋体"/>
+							<family val="3"/>
+							<charset val="134"/>
+							<scheme val="minor"/>
+						</rPr>
+						<t>txt</t>
+					</r> 
+				 */
+					
+				if (length>0)
+				{
+					for (var i:int = 0; i < length; ++i )
+					{
+						content += list.r[i].t.toString();
+					}
+				}else {
+					
+					/* 
+						e.g. 
+						<si>
+							<t>buy</t>
+						</si>
+					 */
+					content = list.t.toString();
+				}
+				return content;
 			}
 		}
 		private function retrieveXML(path:String):XML
@@ -256,9 +293,11 @@ package com.childoftv.xlsxreader
 		private function convertToOpenXMLNS(s:String):XML
 		{
 			
-			XML.ignoreProcessingInstructions=true;
+			XML.ignoreProcessingInstructions = true;
+			XML.ignoreWhitespace = false;
 			var XMLDoc:XML=XML(s);
 			XMLDoc.normalize();
+			XML.ignoreWhitespace = true;
 			return XMLDoc;
 		}
 		
