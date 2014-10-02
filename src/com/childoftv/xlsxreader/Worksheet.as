@@ -109,16 +109,23 @@ package com.childoftv.xlsxreader
 		 * @return the cell value as a string
 		 * 
 		 */ 
-		public function getCellValue(cellRef:String):String
+		public function getCellValue(cellRef:String, htmlText:Boolean=false):String
 		{
 			default xml namespace=ns;
-			var xml:XMLList=getCell(cellRef);
-			if(xml.v.valueOf())
+			var xml:XMLList = getCell(cellRef);
+			if (htmlText == true)
 			{
-				return xml.v.valueOf();
-			}else{
-				return null;
+				if(xml.htmlText.valueOf())
+				{
+					return xml.htmlText.valueOf();
+				}
+			}else {
+				if(xml.v.valueOf())
+				{
+					return xml.v.valueOf();
+				}
 			}
+			return null;
 		}
 			
 		private function getRawRows(column:String="A",from:Number=1,to:Number=-1):XMLList
@@ -178,11 +185,19 @@ package com.childoftv.xlsxreader
 				if(item.f.(children().length()!=0)+""=="") // If it's the result of a formula, no need to replace
 				{
 					var content:String = "";
-					if(item.@t=="str")
-						content=fileLink.sharedString(item.v.toString());
-					if(item.@t=="s")
+					var html_content:String = "";
+					if (item.@t == "str")
+					{
 						content = fileLink.sharedString(item.v.toString());
+						html_content = fileLink.sharedString(item.v.toString(), true);
+					}
+					if (item.@t == "s")
+					{
+						content = fileLink.sharedString(item.v.toString());
+						html_content = fileLink.sharedString(item.v.toString(), true);
+					}
 					item.v = content;
+					item.htmlText = html_content;
 				}
 			}
 			return copy;

@@ -230,7 +230,7 @@ package com.childoftv.xlsxreader
 		 *Retrieves a specific shared string
 		 * 
 		 */ 
-		internal function sharedString(index:String):String
+		internal function sharedString(index:String, htmlText:Boolean=false):String
 		{
 			default xml namespace=openXMLNS;
 			if (index==""||! index)
@@ -266,7 +266,19 @@ package com.childoftv.xlsxreader
 				{
 					for (var i:int = 0; i < length; ++i )
 					{
-						content += list.r[i].t.toString();
+						var r:XML = list.r[i];
+						var t:String = r.t.toString();
+						if (htmlText == true)
+						{
+							var color:String =  r.rPr.color.@rgb.toString();
+							if (color.length > 0)
+							{
+								color = "<font color='#" + color + "'>" + t + "</font>";
+								content += color;
+								continue;
+							}
+						}
+						content += t;
 					}
 				}else {
 					
