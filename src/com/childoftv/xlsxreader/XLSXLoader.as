@@ -25,6 +25,7 @@ package com.childoftv.xlsxreader
 	
 	
 	import deng.fzip.FZip;
+	import deng.fzip.FZipFile;
 	import flash.events.Event;
 	import flash.events.EventDispatcher;
 	import flash.events.IOErrorEvent;
@@ -72,9 +73,9 @@ package com.childoftv.xlsxreader
 		public static var openXMLNS:Namespace=new Namespace("http://schemas.openxmlformats.org/spreadsheetml/2006/main");
 		
 		private var file:String="none";
+		private var sharedStringsCache:XML;
 		private var manifestCache:XML;
-		private var worksheetCache:Dictionary = new Dictionary();
-		private var sharedStrings:SharedStrings;
+		private var worksheetCache:Dictionary=new Dictionary();
 		
 		default xml namespace=openXMLNS;
 		/**
@@ -150,7 +151,7 @@ package com.childoftv.xlsxreader
 			default xml namespace=openXMLNS;
 			if (! manifestCache)
 			{
-				manifestCache=XMLUtils.retrieveXML("xl/workbook.xml");
+				manifestCache=retrieveXML("xl/workbook.xml");
 			}
 			var ret:Worksheet;
 			var val:*=manifestCache..sheet.(@name==wName);
@@ -172,7 +173,7 @@ package com.childoftv.xlsxreader
 			default xml namespace=openXMLNS;
 			if (! manifestCache)
 			{
-				manifestCache=XMLUtils.retrieveXML("xl/workbook.xml");
+				manifestCache=retrieveXML("xl/workbook.xml");
 			}
 			
 			return Boolean(manifestCache.sheets.sheet.(@name==wName).length() > 0);
@@ -188,7 +189,7 @@ package com.childoftv.xlsxreader
 			default xml namespace=openXMLNS;
 			if (! manifestCache)
 			{
-				manifestCache=XMLUtils.retrieveXML("xl/workbook.xml");
+				manifestCache=retrieveXML("xl/workbook.xml");
 			}
 			
 			var sheetNames:Vector.<String> = new Vector.<String>();
@@ -203,10 +204,24 @@ package com.childoftv.xlsxreader
 			
 			if (! worksheetCache[id])
 			{
-				worksheetCache[id]=new Worksheet(wName,this,XMLUtils.retrieveXML("xl/worksheets/sheet"+id+".xml"));
+				worksheetCache[id]=new Worksheet(wName,this,retrieveXML("xl/worksheets/sheet"+id+".xml"));
 			}
 			return worksheetCache[id];
 			
+		}
+		/**
+		 * @private  
+		 * 
+		 * Looks up the internal shared string database XML
+		 * 
+		 */     
+		internal function sharedStrings():XML
+		{
+			if (! sharedStringsCache)
+			{
+				sharedStringsCache=retrieveXML("xl/sharedStrings.xml");
+			}
+			return sharedStringsCache;
 		}
 		
 		/**
@@ -224,7 +239,8 @@ package com.childoftv.xlsxreader
 			}
 			else
 			{
-				var list:XMLList = sharedStrings.getSharedStrings(index);
+				
+				var list:XMLList = sharedStrings().child(index);
 				var content:String = "";
 				var length:uint = list.r.length();
 				// rows with font attributes
@@ -264,6 +280,25 @@ package com.childoftv.xlsxreader
 				}
 				return content;
 			}
+		}
+		private function retrieveXML(path:String):XML
+		{
+			
+			var file:FZipFile=zipProcessor.getFileByName(path);
+			return convertToOpenXMLNS(file.getContentAsString(false));
+			
+		}
+		
+		
+		private function convertToOpenXMLNS(s:String):XML
+		{
+			
+			XML.ignoreProcessingInstructions = true;
+			XML.ignoreWhitespace = false;
+			var XMLDoc:XML=XML(s);
+			XMLDoc.normalize();
+			XML.ignoreWhitespace = true;
+			return XMLDoc;
 		}
 		
 		/**
