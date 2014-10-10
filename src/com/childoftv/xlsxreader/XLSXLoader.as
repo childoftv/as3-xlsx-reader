@@ -70,7 +70,8 @@ package com.childoftv.xlsxreader
 	{
 		private var zipProcessor:FZip =new FZip();
 		
-		public static var openXMLNS:Namespace=new Namespace("http://schemas.openxmlformats.org/spreadsheetml/2006/main");
+		public static var openXMLNS:Namespace = new Namespace("http://schemas.openxmlformats.org/spreadsheetml/2006/main");
+		public static var themeXMLNS:Namespace=new Namespace("http://schemas.openxmlformats.org/drawingml/2006/main");
 		
 		private var file:String="none";
 		private var sharedStringsCache:XML;
@@ -224,6 +225,45 @@ package com.childoftv.xlsxreader
 			return sharedStringsCache;
 		}
 		
+		private var theme:XML;
+		internal function bookTheme():XML
+		{
+			default xml namespace=themeXMLNS;
+			if (theme == null)
+				theme = retrieveXML("xl/theme/theme1.xml");
+			return theme;
+		}
+		
+		internal function getThemeColor(colorIndex:String):String
+		{
+			var ele:XMLList = bookTheme().child("themeElements");
+			var rgb:XMLList = bookTheme().child("themeElements").child("clrScheme").child(colorIndex).srgbClr.@val;
+			return rgb;
+		}
+		
+		private var styles:XML;
+		
+		internal function cellStyles():XML
+		{
+			if (styles == null)
+				styles = retrieveXML("xl/styles.xml");
+			return styles;
+		}
+		
+		internal function getCellStyle(cellIndex:int):XMLList
+		{
+			default xml namespace=openXMLNS;
+			var desc:XMLList = cellStyles().child("cellXfs").child(cellIndex);
+			var fontId:String = desc.@fontId;
+			var style:XMLList = cellStyles().child("fonts").child(fontId);
+			var theme_color:String = style.color.@theme;
+			if (theme_color.length > 0)
+			{
+				style.color.@rgb = cellStyles().child("colors").indexedColors.child(theme_color);
+			}
+			return style;
+		}
+		
 		/**
 		 * @private  
 		 * 
@@ -241,6 +281,7 @@ package com.childoftv.xlsxreader
 			{
 				
 				var list:XMLList = sharedStrings().child(index);
+				var style:XMLList = getCellStyle(int(index));
 				var content:String = "";
 				var length:uint = list.r.length();
 				// rows with font attributes
@@ -270,10 +311,21 @@ package com.childoftv.xlsxreader
 						var t:String = r.t.toString();
 						if (htmlText == true)
 						{
-							var color:String =  r.rPr.color.@rgb.toString();
-							if (color.length > 0)
+							var color_theme:String = r.rPr.color.@theme;
+							if (color_theme.length > 0)
 							{
-								color = "<font color='#" + color + "'>" + t + "</font>";
+								r.rPr.color.@rgb = getThemeColor(color_theme);
+							}
+							var color:String =  r.rPr.color.@rgb.toString();
+							var size:String = r.rPr.sz.@val;
+							if (color.length > 0 || size.length>0)
+							{
+								var default_size:String = style.sz.@val;
+								//ignor default color
+								var default_color:String = style.color.@rgb;
+								var size_str:String = size.length > 0 && default_size!=size ? "size='" + size + "' " : "";
+								var color_str:String = color.length > 0 ? "color='#" + color + "' " : "";
+								color = "<font "+ size_str+ color_str + ">"+ t + "</font>";
 								content += color;
 								continue;
 							}
