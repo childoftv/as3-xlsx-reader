@@ -325,7 +325,10 @@ package com.childoftv.xlsxreader
 								var default_color:String = style.color.@rgb;
 								var size_str:String = size.length > 0 && default_size!=size ? "size='" + size + "' " : "";
 								var color_str:String = color.length > 0 ? "color='#" + color + "' " : "";
-								color = "<font "+ size_str+ color_str + ">"+ t + "</font>";
+								if(size_str != "" || color_str!="")
+									color = "<font " + size_str + color_str + ">" + t + "</font>";
+								else
+									color += t;
 								content += color;
 								continue;
 							}
