@@ -202,6 +202,17 @@ package com.childoftv.xlsxreader
 			}
 			return copy;
 		}
+		
+		public function get rows():uint
+		{
+			return xml!=null ? xml.sheetData.row : 0;
+		}
+		
+		public function get cols():uint
+		{
+			return xml!=null ? xml.sheetData.col : 0;
+		}
+		
 		public function toString():String
 		{
 			return xml.toString();
