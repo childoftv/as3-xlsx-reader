@@ -2,7 +2,8 @@ package  {
 	import flash.globalization.StringTools;
 	public class XLSXUtils
 	{
-		static private const A2Z:Array = ["0","A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y","Z"];
+		static private const A2Z:Array = ["Z", "A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y"];
+		static private const A2Z2:Array = ["0","A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y","Z"];
 		static private const AZ_COUNT:uint = 26;
 		public function XLSXUtils()
 		{
@@ -12,22 +13,25 @@ package  {
 		static public function num2AZ(value:Number):String
 		{
 			var az:String = "";
-			if (value <= AZ_COUNT)
 			{
-				az = A2Z[value];
-			}else {
-				var remain:uint = value % AZ_COUNT;
-				var count:Number = value / AZ_COUNT;
-				count = Math.floor(count);
-				
-				if (count > 0)
+				if (value <= AZ_COUNT)
 				{
-					az = num2AZ(count)
+					return A2Z[value % AZ_COUNT];
+				}else {
+					
+					var count:Number = 1;
+					while (count > 0)
+					{
+						count = value / AZ_COUNT;	
+						count = Math.floor(count);
+						var remain:uint = value % AZ_COUNT;
+						az = A2Z[remain]+az;
+						value = remain==0&&count>1?count-1:count;
+					}
+					
 				}
-				az += A2Z[remain];
 			}
 			
-			trace(az);
 			return az;
 		}
 		
@@ -37,10 +41,11 @@ package  {
 			var num:Number = 0;
 			
 			var char:String = value.charAt(0);
-			var index:Number = A2Z.indexOf(char);
+			var index:Number = A2Z2.indexOf(char);
 			if (index== -1)
 				throw "value must be 'A'-'Z'";
 			var length:uint = value.length;
+			
 			num = index * Math.pow(AZ_COUNT, length-1);
 			if (length > 1)
 			{
