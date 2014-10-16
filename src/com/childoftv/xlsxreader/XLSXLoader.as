@@ -311,6 +311,8 @@ package com.childoftv.xlsxreader
 					{
 						var r:XML = list.r[i];
 						var t:String = r.t.toString();
+						if(t=="")
+							continue;
 						if (htmlText == true)
 						{
 							var color_theme:String = r.rPr.color.@theme;
@@ -328,7 +330,7 @@ package com.childoftv.xlsxreader
 								var size_str:String = size.length > 0 && default_size!=size ? "size='" + size + "' " : "";
 								var color_str:String = color.length > 0 ? "color='#" + color + "' " : "";
 								if(size_str != "" || color_str!="")
-									color = "<font " + size_str + color_str + ">" + t + "</font>";
+									color = "~@font " + size_str + color_str + "@~" + t + "~@/font@~";
 								else
 									color += t;
 								content += color;
