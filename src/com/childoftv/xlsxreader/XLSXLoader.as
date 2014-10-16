@@ -24,14 +24,15 @@ package com.childoftv.xlsxreader
 	
 	
 	
-	import deng.fzip.FZip;
-	import deng.fzip.FZipFile;
 	import flash.events.Event;
 	import flash.events.EventDispatcher;
 	import flash.events.IOErrorEvent;
 	import flash.net.URLRequest;
 	import flash.utils.ByteArray;
 	import flash.utils.Dictionary;
+	
+	import deng.fzip.FZip;
+	import deng.fzip.FZipFile;
 	
 	
 	
@@ -253,7 +254,8 @@ package com.childoftv.xlsxreader
 		internal function getCellStyle(cellIndex:int):XMLList
 		{
 			default xml namespace=openXMLNS;
-			var desc:XMLList = cellStyles().child("cellXfs").child(cellIndex);
+			var cellXfs:XMLList = cellStyles().child("cellStyleXfs");
+			var desc:XMLList = cellXfs.child(cellIndex);
 			var fontId:String = desc.@fontId;
 			var style:XMLList = cellStyles().child("fonts").child(fontId);
 			var theme_color:String = style.color.@theme;
@@ -270,7 +272,7 @@ package com.childoftv.xlsxreader
 		 *Retrieves a specific shared string
 		 * 
 		 */ 
-		internal function sharedString(index:String, htmlText:Boolean=false):String
+		internal function sharedString(index:String, styleIndex:String,htmlText:Boolean=false):String
 		{
 			default xml namespace=openXMLNS;
 			if (index==""||! index)
@@ -281,7 +283,7 @@ package com.childoftv.xlsxreader
 			{
 				
 				var list:XMLList = sharedStrings().child(index);
-				var style:XMLList = getCellStyle(int(index));
+				var style:XMLList = getCellStyle(int(styleIndex));
 				var content:String = "";
 				var length:uint = list.r.length();
 				// rows with font attributes

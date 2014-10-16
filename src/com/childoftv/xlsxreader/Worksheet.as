@@ -127,6 +127,26 @@ package com.childoftv.xlsxreader
 			}
 			return null;
 		}
+		
+		public function getCellExtend(col:uint, row:uint, htmlText:Boolean=true):String
+		{
+			default xml namespace=ns;
+			var cellRef:String = XLSXUtils.num2AZ(col) + row;
+			var xml:XMLList = getCell(cellRef);
+			if (htmlText == true)
+			{
+				if(xml.htmlText.valueOf())
+				{
+					return xml.htmlText.valueOf();
+				}
+			}else {
+				if(xml.v.valueOf())
+				{
+					return xml.v.valueOf();
+				}
+			}
+			return null;
+		}
 			
 		private function getRawRows(column:String="A",from:Number=1,to:Number=-1):XMLList
 		{
@@ -188,13 +208,13 @@ package com.childoftv.xlsxreader
 					var html_content:String = "";
 					if (item.@t == "str")
 					{
-						content = fileLink.sharedString(item.v.toString());
-						html_content = fileLink.sharedString(item.v.toString(), true);
+						content = fileLink.sharedString(item.v.toString(), item.s.toString());
+						html_content = fileLink.sharedString(item.v.toString(), item.s.toString(), true);
 					}
 					if (item.@t == "s")
 					{
-						content = fileLink.sharedString(item.v.toString());
-						html_content = fileLink.sharedString(item.v.toString(), true);
+						content = fileLink.sharedString(item.v.toString(), item.s.toString());
+						html_content = fileLink.sharedString(item.v.toString(), item.s.toString(), true);
 					}
 					item.v = content;
 					item.htmlText = html_content;
@@ -205,12 +225,22 @@ package com.childoftv.xlsxreader
 		
 		public function get rows():uint
 		{
-			return xml!=null ? xml.sheetData.row : 0;
+			var size:String = xml.dimension.@ref;
+			var min_max:Array = size.split(":");
+			var max:String = min_max[1];
+			var row:Number=Number(max.match(/[0-9]+/)[0]);
+			var column:String=max.match(/[A-Z]+/)[0];
+			return row;
 		}
 		
 		public function get cols():uint
 		{
-			return xml!=null ? xml.sheetData.col : 0;
+			var size:String = xml.dimension.@ref;
+			var min_max:Array = size.split(":");
+			var max:String = min_max[1];
+			var row:Number=Number(max.match(/[0-9]+/)[0]);
+			var column:String=max.match(/[A-Z]+/)[0];
+			return XLSXUtils.AZ2Num(column);
 		}
 		
 		public function toString():String

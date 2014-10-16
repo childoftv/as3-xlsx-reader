@@ -1,5 +1,5 @@
-package  {
-	import flash.globalization.StringTools;
+package com.childoftv.xlsxreader  {
+	
 	public class XLSXUtils
 	{
 		static private const A2Z:Array = ["Z", "A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y"];
