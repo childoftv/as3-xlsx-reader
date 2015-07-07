@@ -98,7 +98,7 @@ package com.childoftv.xlsxreader
 			cellRef=cellRef.toUpperCase();
 			var row:Number=Number(cellRef.match(/[0-9]+/)[0]);
 			var column:String=cellRef.match(/[A-Z]+/)[0];
-			trace("getCell:"+cellRef, row, column);
+		//	trace("getCell:"+cellRef, row, column);
 			
 			return getRows(column,row,row);
 		}
@@ -225,7 +225,8 @@ package com.childoftv.xlsxreader
 		
 		public function get rows():uint
 		{
-			var size:String = xml.dimension.@ref;
+			default xml namespace=ns;
+			var size:String = toXML().dimension.@ref;
 			var min_max:Array = size.split(":");
 			var max:String = min_max[1];
 			var row:Number=Number(max.match(/[0-9]+/)[0]);
@@ -235,9 +236,12 @@ package com.childoftv.xlsxreader
 		
 		public function get cols():uint
 		{
-			var size:String = xml.dimension.@ref;
+			default xml namespace=ns;
+			var size:String = String(xml.dimension.@ref);
 			var min_max:Array = size.split(":");
 			var max:String = min_max[1];
+			if(max==null)
+				return 0;
 			var row:Number=Number(max.match(/[0-9]+/)[0]);
 			var column:String=max.match(/[A-Z]+/)[0];
 			return XLSXUtils.AZ2Num(column);
