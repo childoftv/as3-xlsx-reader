@@ -206,15 +206,13 @@ package com.childoftv.xlsxreader
 				{
 					var content:String = "";
 					var html_content:String = "";
-					if (item.@t == "str")
+					if (item.@t == "str" || item.@t=="s")
 					{
 						content = fileLink.sharedString(item.v.toString(), item.s.toString());
 						html_content = fileLink.sharedString(item.v.toString(), item.s.toString(), true);
-					}
-					if (item.@t == "s")
-					{
-						content = fileLink.sharedString(item.v.toString(), item.s.toString());
-						html_content = fileLink.sharedString(item.v.toString(), item.s.toString(), true);
+					}else{
+						content = item.v.toString();
+						html_content = item.v.toString();
 					}
 					item.v = content;
 					item.htmlText = html_content;
