@@ -98,7 +98,7 @@ package com.childoftv.xlsxreader
 			cellRef=cellRef.toUpperCase();
 			var row:Number=Number(cellRef.match(/[0-9]+/)[0]);
 			var column:String=cellRef.match(/[A-Z]+/)[0];
-			trace("getCell:"+cellRef, row, column);
+		//	trace("getCell:"+cellRef, row, column);
 			
 			return getRows(column,row,row);
 		}
@@ -112,6 +112,26 @@ package com.childoftv.xlsxreader
 		public function getCellValue(cellRef:String, htmlText:Boolean=false):String
 		{
 			default xml namespace=ns;
+			var xml:XMLList = getCell(cellRef);
+			if (htmlText == true)
+			{
+				if(xml.htmlText.valueOf())
+				{
+					return xml.htmlText.valueOf();
+				}
+			}else {
+				if(xml.v.valueOf())
+				{
+					return xml.v.valueOf();
+				}
+			}
+			return null;
+		}
+		
+		public function getCellExtend(col:uint, row:uint, htmlText:Boolean=true):String
+		{
+			default xml namespace=ns;
+			var cellRef:String = XLSXUtils.num2AZ(col) + row;
 			var xml:XMLList = getCell(cellRef);
 			if (htmlText == true)
 			{
@@ -186,15 +206,13 @@ package com.childoftv.xlsxreader
 				{
 					var content:String = "";
 					var html_content:String = "";
-					if (item.@t == "str")
+					if (item.@t == "str" || item.@t=="s")
 					{
-						content = fileLink.sharedString(item.v.toString());
-						html_content = fileLink.sharedString(item.v.toString(), true);
-					}
-					if (item.@t == "s")
-					{
-						content = fileLink.sharedString(item.v.toString());
-						html_content = fileLink.sharedString(item.v.toString(), true);
+						content = fileLink.sharedString(item.v.toString(), item.s.toString());
+						html_content = fileLink.sharedString(item.v.toString(), item.s.toString(), true);
+					}else{
+						content = item.v.toString();
+						html_content = item.v.toString();
 					}
 					item.v = content;
 					item.htmlText = html_content;
@@ -202,6 +220,31 @@ package com.childoftv.xlsxreader
 			}
 			return copy;
 		}
+		
+		public function get rows():uint
+		{
+			default xml namespace=ns;
+			var size:String = toXML().dimension.@ref;
+			var min_max:Array = size.split(":");
+			var max:String = min_max[1];
+			var row:Number=Number(max.match(/[0-9]+/)[0]);
+			var column:String=max.match(/[A-Z]+/)[0];
+			return row;
+		}
+		
+		public function get cols():uint
+		{
+			default xml namespace=ns;
+			var size:String = String(xml.dimension.@ref);
+			var min_max:Array = size.split(":");
+			var max:String = min_max[1];
+			if(max==null)
+				return 0;
+			var row:Number=Number(max.match(/[0-9]+/)[0]);
+			var column:String=max.match(/[A-Z]+/)[0];
+			return XLSXUtils.AZ2Num(column);
+		}
+		
 		public function toString():String
 		{
 			return xml.toString();
