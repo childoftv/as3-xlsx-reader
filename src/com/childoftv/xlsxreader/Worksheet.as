@@ -227,6 +227,8 @@ package com.childoftv.xlsxreader
 			var size:String = toXML().dimension.@ref;
 			var min_max:Array = size.split(":");
 			var max:String = min_max[1];
+			if(max==null)
+				return 0;
 			var row:Number=Number(max.match(/[0-9]+/)[0]);
 			var column:String=max.match(/[A-Z]+/)[0];
 			return row;
