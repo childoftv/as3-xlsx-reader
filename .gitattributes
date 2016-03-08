@@ -1,1 +1,4 @@
+*.swf -crlf -diff -merge
+*.swc -crlf -diff -merge
+*.xlsx binary
 * text=auto

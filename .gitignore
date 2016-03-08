@@ -1,4 +1,3 @@
-.project
-.actionScriptProperties
+.settings/
 bin-debug/
 *.swf

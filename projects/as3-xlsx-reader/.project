@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<projectDescription>
+	<name>as3-xlsx-reader</name>
+	<comment></comment>
+	<projects>
+	</projects>
+	<buildSpec>
+		<buildCommand>
+			<name>com.adobe.flexbuilder.project.flexbuilder</name>
+			<arguments>
+			</arguments>
+		</buildCommand>
+	</buildSpec>
+	<natures>
+		<nature>com.adobe.flexbuilder.project.aslibnature</nature>
+		<nature>com.adobe.flexbuilder.project.actionscriptnature</nature>
+	</natures>
+	<linkedResources>
+		<link>
+			<name>[source path] src</name>
+			<type>2</type>
+			<location>PARENT-2-PROJECT_LOC/src</location>
+		</link>
+		<link>
+			<name>bin-debug</name>
+			<type>2</type>
+			<locationURI>PARENT-2-PROJECT_LOC/bin</locationURI>
+		</link>
+	</linkedResources>
+</projectDescription>

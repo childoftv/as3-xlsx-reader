@@ -20,10 +20,7 @@ THE SOFTWARE.
 */
 package com.childoftv.xlsxreader
 {
-	
-	
-	
-	
+
 	import flash.events.Event;
 	import flash.events.EventDispatcher;
 	import flash.events.IOErrorEvent;

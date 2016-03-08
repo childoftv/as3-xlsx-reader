@@ -1,0 +1,3 @@
+[submodule "libs/fzip"]
+	path = libs/fzip
+	url = https://github.com/claus/fzip
