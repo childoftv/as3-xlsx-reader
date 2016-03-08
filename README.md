@@ -15,7 +15,7 @@ Just add the [swc](bin/as3-xlsx-reader.swc) to your library path
 ###Advanced (for modifying source/building your own)
 
 1. Clone master e.g. `git clone git@github.com:childoftv/as3-xlsx-reader.git`
-2. `cd master`
+2. `cd as3-xlsx-reader`
 3. Fetch Fzip using `git submodule foreach git pull origin master`
 4. Now open the projects in the [projects](projects) directories.
 
