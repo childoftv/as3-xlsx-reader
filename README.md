@@ -31,4 +31,4 @@ Look at [LoadXLSXExample.as](projects/as3-xlsx-reader-example/src/LoadXLSXExampl
 
 ##LICENSE:
 
-Released under (MIT LICENSE)[LICENSE]
+Released under [MIT LICENSE](LICENSE)
