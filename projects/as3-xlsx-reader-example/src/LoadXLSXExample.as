@@ -60,7 +60,7 @@ package
 			trace(s);
 			
 			var line:String = s + "\n";
-			textField.text += line;
+			textField.appendText(line);
 			
 		}
 		
