@@ -27,9 +27,10 @@ Just add the [swc](bin/as3-xlsx-reader.swc) to your library path
 
 1. `cd as3-xlsx-reader`
 2. Build the library: `compc -include-sources=src -library-path=libs/fzip/bin/fzip.swc  -output bin/as3-xlsx-reader.swc``
-3. Build the Example: `mxmlc -source-path=projects/as3-xlsx-reader-example/src/ -library-path=bin/as3-xlsx-reader.swc -static-link-runtime-shared-libraries=true -use-network=false -output=projects/as3-xlsx-reader-example/bin-debug/LoadXLSXExample.swf  projects/as3-xlsx-reader-example/src/LoadXLSXExample.as`
+3. Build the Example: `mxmlc -source-path=projects/as3-xlsx-reader-example/src/ -library-path=bin/as3-xlsx-reader.swc -static-link-runtime-shared-libraries=true -use-network=false -debug=true -output=projects/as3-xlsx-reader-example/bin-debug/LoadXLSXExample.swf  projects/as3-xlsx-reader-example/src/LoadXLSXExample.as`
 4. Copy the Spreadsheet to the debug folder: `cp projects/as3-xlsx-reader-example/assets/*.xlsx projects/as3-xlsx-reader-example/bin-debug/`
 5. run with fdb: `fdb projects/as3-xlsx-reader-example/bin-debug/LoadXLSXExample.swf`
+6. type `continue` for output
 
 
 ##Example
