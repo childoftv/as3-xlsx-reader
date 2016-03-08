@@ -35,6 +35,7 @@ package com.childoftv.xlsxreader
 	import deng.fzip.FZipFile;
 	
 	
+	
 	[Event(name="complete",type="flash.events.Event")]
 	
 	/**
@@ -70,7 +71,8 @@ package com.childoftv.xlsxreader
 	{
 		private var zipProcessor:FZip =new FZip();
 		
-		public static var openXMLNS:Namespace=new Namespace("http://schemas.openxmlformats.org/spreadsheetml/2006/main");
+		public static var openXMLNS:Namespace = new Namespace("http://schemas.openxmlformats.org/spreadsheetml/2006/main");
+		public static var themeXMLNS:Namespace=new Namespace("http://schemas.openxmlformats.org/drawingml/2006/main");
 		
 		private var file:String="none";
 		private var sharedStringsCache:XML;
@@ -224,13 +226,53 @@ package com.childoftv.xlsxreader
 			return sharedStringsCache;
 		}
 		
+		private var theme:XML;
+		internal function bookTheme():XML
+		{
+			default xml namespace=themeXMLNS;
+			if (theme == null)
+				theme = retrieveXML("xl/theme/theme1.xml");
+			return theme;
+		}
+		
+		internal function getThemeColor(colorIndex:String):String
+		{
+			var ele:XMLList = bookTheme().child("themeElements");
+			var rgb:XMLList = bookTheme().child("themeElements").child("clrScheme").child(colorIndex).srgbClr.@val;
+			return rgb;
+		}
+		
+		private var styles:XML;
+		
+		internal function cellStyles():XML
+		{
+			if (styles == null)
+				styles = retrieveXML("xl/styles.xml");
+			return styles;
+		}
+		
+		internal function getCellStyle(cellIndex:int):XMLList
+		{
+			default xml namespace=openXMLNS;
+			var cellXfs:XMLList = cellStyles().child("cellStyleXfs");
+			var desc:XMLList = cellXfs.child(cellIndex);
+			var fontId:String = desc.@fontId;
+			var style:XMLList = cellStyles().child("fonts").child(fontId);
+			var theme_color:String = style.color.@theme;
+			if (theme_color.length > 0)
+			{
+				style.color.@rgb = cellStyles().child("colors").indexedColors.child(theme_color);
+			}
+			return style;
+		}
+		
 		/**
 		 * @private  
 		 * 
 		 *Retrieves a specific shared string
 		 * 
 		 */ 
-		internal function sharedString(index:String):String
+		internal function sharedString(index:String, styleIndex:String,htmlText:Boolean=false):String
 		{
 			default xml namespace=openXMLNS;
 			if (index==""||! index)
@@ -240,8 +282,74 @@ package com.childoftv.xlsxreader
 			else
 			{
 				
-				
-				return sharedStrings().child(index).t.toString();;
+				var list:XMLList = sharedStrings().child(index);
+				var style:XMLList = getCellStyle(int(styleIndex));
+				var content:String = "";
+				var length:uint = list.r.length();
+				// rows with font attributes
+				/* e.g.
+				 <si>
+					<r>
+						<t>desc_</t>
+					</r>
+					<r>
+						<rPr>
+							<sz val="11"/>
+							<color rgb="FF00FF00"/>
+							<rFont val="宋体"/>
+							<family val="3"/>
+							<charset val="134"/>
+							<scheme val="minor"/>
+						</rPr>
+						<t>txt</t>
+					</r> 
+				 */
+					
+				if (length>0)
+				{
+					for (var i:int = 0; i < length; ++i )
+					{
+						var r:XML = list.r[i];
+						var t:String = r.t.toString();
+						if(t=="")
+							continue;
+						if (htmlText == true)
+						{
+							var color_theme:String = r.rPr.color.@theme;
+							if (color_theme.length > 0)
+							{
+								r.rPr.color.@rgb = getThemeColor(color_theme);
+							}
+							var color:String =  r.rPr.color.@rgb.toString();
+							var size:String = r.rPr.sz.@val;
+							if (color.length > 0 || size.length>0)
+							{
+								var default_size:String = style.sz.@val;
+								//ignor default color
+								var default_color:String = style.color.@rgb;
+								var size_str:String = size.length > 0 && default_size!=size ? "size='" + size + "' " : "";
+								var color_str:String = color.length > 0 ? "color='#" + color + "' " : "";
+								if(size_str != "" || color_str!="")
+									color = "~@font " + size_str + color_str + "@~" + t + "~@/font@~";
+								else
+									color += t;
+								content += color;
+								continue;
+							}
+						}
+						content += t;
+					}
+				}else {
+					
+					/* 
+						e.g. 
+						<si>
+							<t>buy</t>
+						</si>
+					 */
+					content = list.t.toString();
+				}
+				return content;
 			}
 		}
 		private function retrieveXML(path:String):XML
@@ -256,9 +364,11 @@ package com.childoftv.xlsxreader
 		private function convertToOpenXMLNS(s:String):XML
 		{
 			
-			XML.ignoreProcessingInstructions=true;
+			XML.ignoreProcessingInstructions = true;
+			XML.ignoreWhitespace = false;
 			var XMLDoc:XML=XML(s);
 			XMLDoc.normalize();
+			XML.ignoreWhitespace = true;
 			return XMLDoc;
 		}
 		

@@ -51,7 +51,9 @@ package
 			var sheet_1:Worksheet=excel_loader.worksheet("Sheet1");
 			
 			//Access a cell in sheet 1 and output to trace
-			trace("Cell A3="+sheet_1.getCellValue("A3")) //outputs: Cell A3=Hello World;
+			trace("Cell A3=" + sheet_1.getCellValue("A3")) //outputs: Cell A3=Hello World;
+			trace("Cell A4=" + sheet_1.getCellValue("A4"))//outputs: Cell A4=Hello Excel with colors;
+			trace("Cell A5=" + sheet_1.getCellValue("A5"))//outputs: Cell A3=Hello Excel with the same color;
 		}
 	}
 }
