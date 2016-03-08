@@ -25,22 +25,42 @@ package
 	
 	import flash.display.Sprite;
 	import flash.events.Event;
+	import flash.text.TextField;
 	
 	public class LoadXLSXExample extends Sprite
 	{
 		//Create the Excel Loader
-		protected var excel_loader:XLSXLoader=new XLSXLoader();
+		protected var excel_loader:XLSXLoader = new XLSXLoader();
+		private var textField:TextField = new TextField();
 		
 		public function LoadXLSXExample()
 		{
 			
+			setupScreenText();
 			
 			//Listen for when the file is loaded
-			excel_loader.addEventListener(Event.COMPLETE,loadingComplete);
+			excel_loader.addEventListener(Event.COMPLETE, loadingComplete);
 			
 			//Load the file
 			excel_loader.load("Example Spreadsheet.xlsx");
 			
+			
+		}
+		
+		private function setupScreenText():void
+		{
+			textField.multiline = true;
+			textField.height = 100;
+			textField.width = 400;
+			addChild(textField);
+		}
+		private var log:String = "";
+		private function logline(s:String):void
+		{
+			trace(s);
+			
+			var line:String = s + "\n";
+			textField.text += line;
 			
 		}
 		
@@ -51,9 +71,9 @@ package
 			var sheet_1:Worksheet=excel_loader.worksheet("Sheet1");
 			
 			//Access a cell in sheet 1 and output to trace
-			trace("Cell A3=" + sheet_1.getCellValue("A3")) //outputs: Cell A3=Hello World;
-			trace("Cell A4=" + sheet_1.getCellValue("A4"))//outputs: Cell A4=Hello Excel with colors;
-			trace("Cell A5=" + sheet_1.getCellValue("A5"))//outputs: Cell A3=Hello Excel with the same color;
+			logline("Cell A3=" + sheet_1.getCellValue("A3")) //outputs: Cell A3=Hello World;
+			logline("Cell A4=" + sheet_1.getCellValue("A4")) //outputs: Cell A4=Hello Excel with colors;
+			logline("Cell A5=" + sheet_1.getCellValue("A5")) //outputs: Cell A3=Hello Excel with the same color;
 		}
 	}
 }
