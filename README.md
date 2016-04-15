@@ -19,9 +19,9 @@ Just add the [swc](bin/as3-xlsx-reader.swc) to your library path
 3. Fetch [Fzip](https://github.com/claus/fzip) using `git submodule foreach git pull origin master`
 4. Now open the projects in the [projects](projects) directories.
 
-[as3-xlsx-reader](projects/ass-xlsx-reader) is a library project which can be used to build the core (outputs to [bin](bin) folder)
+[as3-xlsx-reader](projects/as3-xlsx-reader) is a library project which can be used to build the core (outputs to [bin](bin) folder)
 
-[as3-xlsx-reader-example](projects/ass-xlsx-reader-example) is an adobe air project which can build a quick example
+[as3-xlsx-reader-example](projects/as3-xlsx-reader-example) is an adobe air project which can build a quick example
 
 ####command line compilation using [Flex SDK](http://www.adobe.com/devnet/flex/flex-sdk-download.html)
 
