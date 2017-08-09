@@ -297,6 +297,8 @@ package com.childoftv.xlsxreader
 							<family val="3"/>
 							<charset val="134"/>
 							<scheme val="minor"/>
+							<b/>
+							<i/>
 						</rPr>
 						<t>txt</t>
 					</r> 
@@ -319,6 +321,8 @@ package com.childoftv.xlsxreader
 							}
 							var color:String =  r.rPr.color.@rgb.toString();
 							var size:String = r.rPr.sz.@val;
+							var bold:Boolean = r.rPr.child("b").length() == 1;
+							var italic:Boolean = r.rPr.child("i").length() == 1;
 							if (color.length > 0 || size.length>0)
 							{
 								var default_size:String = style.sz.@val;
@@ -326,8 +330,12 @@ package com.childoftv.xlsxreader
 								var default_color:String = style.color.@rgb;
 								var size_str:String = size.length > 0 && default_size!=size ? "size='" + size + "' " : "";
 								var color_str:String = color.length > 0 ? "color='#" + color + "' " : "";
+								if(bold)
+									t = "<b>"+ t +"</b>";
+								if(italic)
+									t = "<i>"+ t +"</i>";
 								if(size_str != "" || color_str!="")
-									color = "~@font " + size_str + color_str + "@~" + t + "~@/font@~";
+									color = "<font " + size_str + color_str + ">" + t + "</font>";
 								else
 									color += t;
 								content += color;
